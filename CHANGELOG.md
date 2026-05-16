@@ -1,3 +1,8 @@
+## 0.0.6-swz.1
+
+- Update dependencies
+- refactor: remove unnecessary @override annotations from type fields 
+
 ## 0.0.6
 
 - Correct escape
