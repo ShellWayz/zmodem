@@ -55,7 +55,6 @@ class ZModemParser implements Iterator<ZModemPacket> {
   /// and it's impossible to distinguish between plain text and a data subpacket
   /// without this prompt....
   void expectDataSubpacket() {
-    print('expectDataSubpacket');
     _expectDataSubpacket = true;
   }
 
@@ -124,8 +123,6 @@ class ZModemParser implements Iterator<ZModemPacket> {
     final p1 = _buffer.readAsciiByte();
     final p2 = _buffer.readAsciiByte();
     final p3 = _buffer.readAsciiByte();
-    final crc0 = _buffer.readAsciiByte();
-    final crc1 = _buffer.readAsciiByte();
 
     while (_buffer.isEmpty) {
       yield null;
@@ -168,10 +165,8 @@ class ZModemParser implements Iterator<ZModemPacket> {
     final p3 = _buffer.readEscaped()!;
 
     while (!_buffer.hasEscaped) yield null;
-    final crc0 = _buffer.readEscaped()!;
 
     while (!_buffer.hasEscaped) yield null;
-    final crc1 = _buffer.readEscaped()!;
 
     yield ZModemHeader(frameType, p0, p1, p2, p3);
   }
@@ -193,10 +188,8 @@ class ZModemParser implements Iterator<ZModemPacket> {
         case consts.ZCRCQ | consts.ZDLEESC:
         case consts.ZCRCW | consts.ZDLEESC:
           while (!_buffer.hasEscaped) yield null;
-          final crc0 = _buffer.readEscaped();
 
           while (!_buffer.hasEscaped) yield null;
-          final crc1 = _buffer.readEscaped();
 
           final type = char ^ consts.ZDLEESC;
           yield ZModemDataPacket(type, buffer.takeBytes());
